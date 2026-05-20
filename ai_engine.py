@@ -4,7 +4,7 @@ import streamlit as st
 from memory import save_memory, get_memory
 
 client = Groq(
-   st.secrets["GROQ_API_KEY"]
+    api_key=st.secrets["GROQ_API_KEY"]
 )
 
 def ai_engine(task, mode):
@@ -28,17 +28,16 @@ ATURAN:
 - jika flutter → buat struktur Flutter
 - jika debugging → jelaskan error + solusi
 - jawab detail
-- buat professional
 """
 
     chat_completion = client.chat.completions.create(
         messages=[
             {
                 "role": "user",
-                "content": prompt,
+                "content": prompt
             }
         ],
-        model="llama3-70b-8192",
+        model="llama3-8b-8192"
     )
 
     output = chat_completion.choices[0].message.content
