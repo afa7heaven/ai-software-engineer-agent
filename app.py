@@ -1,35 +1,40 @@
 import streamlit as st
-from transformers import pipeline
+from ai_engine import ai_engine
+from memory import get_memory
+
+st.set_page_config(
+    page_title="AI Software Engineer",
+    layout="wide"
+)
 
 st.title("🤖 AI Software Engineer")
 
-pipe = pipeline(
-    "text-generation",
-    model="distilgpt2"
-)
+st.sidebar.title("🧠 Memory")
+
+st.sidebar.text(get_memory())
 
 mode = st.selectbox("Mode", [
-    "Web App",
-    "Flutter",
-    "Debug"
+    "Full Stack Web App",
+    "Mobile App (Flutter)",
+    "Debug Error"
 ])
 
-task = st.text_area("Masukkan tugas")
+task = st.text_area(
+    "Masukkan tugas AI:"
+)
 
-if st.button("Generate"):
+if st.button("🚀 Generate"):
 
-    prompt = f"""
-Mode: {mode}
+    with st.spinner("AI sedang bekerja..."):
 
-Task:
-{task}
-"""
-
-    result = pipe(
-        prompt,
-        max_new_tokens=200
-    )
+        result = ai_engine(task, mode)
 
     st.subheader("📦 Hasil AI")
 
-    st.code(result[0]["generated_text"])
+    st.code(result)
+
+    st.download_button(
+        "⬇ Download Result",
+        result,
+        file_name="ai_output.txt"
+    )
