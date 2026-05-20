@@ -1,7 +1,6 @@
 from transformers import pipeline
 from memory import save_memory, get_memory
 
-# MODEL AI GRATIS
 pipe = pipeline(
     "text-generation",
     model="TinyLlama/TinyLlama-1.1B-Chat-v1.0"
@@ -12,27 +11,29 @@ def ai_engine(task, mode):
     memory = get_memory()
 
     prompt = f"""
+### SYSTEM
 Kamu adalah AI Software Engineer.
 
-MEMORY:
+### MEMORY
 {memory}
 
-MODE:
+### MODE
 {mode}
 
-TASK:
+### TASK
 {task}
 
-ATURAN:
-- jika web app → buat struktur file
-- jika flutter → buat struktur Flutter
+### RULES
+- jika web app → buat kode lengkap
+- jika flutter → buat struktur flutter
 - jika debug → jelaskan error + solusi
 - jawab detail
 """
 
     result = pipe(
         prompt,
-        max_new_tokens=300
+        max_new_tokens=500,
+        temperature=0.7
     )
 
     output = result[0]["generated_text"]
