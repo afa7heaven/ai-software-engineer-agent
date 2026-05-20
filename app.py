@@ -1,48 +1,44 @@
-from groq import Groq
 import streamlit as st
 
-from memory import save_memory, get_memory
+from ai_engine import ai_engine
+from memory import get_memory
 
-client = Groq(
-    api_key=st.secrets["GROQ_API_KEY"]
+st.set_page_config(
+    page_title="AI Software Engineer",
+    layout="wide"
 )
 
-def ai_engine(task, mode):
+st.title("🤖 AI Software Engineer")
 
-    memory = get_memory()
+st.sidebar.title("🧠 Memory")
 
-    prompt = f"""
-Kamu adalah AI Software Engineer professional.
+st.sidebar.text(get_memory())
 
-MEMORY:
-{memory}
+mode = st.selectbox(
+    "Mode",
+    [
+        "Full Stack Web App",
+        "Mobile App (Flutter)",
+        "Debug Error"
+    ]
+)
 
-MODE:
-{mode}
+task = st.text_area(
+    "Masukkan tugas AI:"
+)
 
-TASK:
-{task}
+if st.button("🚀 Generate"):
 
-ATURAN:
-- jika web app → buat full stack structure
-- jika flutter → buat struktur Flutter
-- jika debugging → jelaskan error + solusi
-- jawab detail
-"""
+    with st.spinner("AI sedang bekerja..."):
 
-    chat_completion = client.chat.completions.create(
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        model="llama3-8b-8192"
+        result = ai_engine(task, mode)
+
+    st.subheader("📦 Hasil AI")
+
+    st.code(result)
+
+    st.download_button(
+        "⬇ Download Result",
+        result,
+        file_name="ai_output.txt"
     )
-
-    output = chat_completion.choices[0].message.content
-
-    save_memory(f"USER: {task}")
-    save_memory(f"AI: {output}")
-
-    return output
