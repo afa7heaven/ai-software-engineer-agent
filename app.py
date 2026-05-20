@@ -1,30 +1,37 @@
-import streamlit as st
-from ai_engine import ai_engine
-from memory import load_memory
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
+from langchain.llms import HuggingFacePipeline
+from transformers import pipeline
 
-st.set_page_config(page_title="AI Software Engineer Agent", layout="wide")
+# model gratis
+pipe = pipeline(
+    "text-generation",
+    model="mistralai/Mistral-7B-Instruct-v0.1"
+)
 
-st.title("🤖 AI Software Engineer Agent")
+llm = HuggingFacePipeline(pipeline=pipe)
 
-mode = st.selectbox("Mode AI", [
-    "Full Stack Web App",
-    "Mobile App (Flutter)",
-    "Debug Error"
-])
+template = """
+Kamu adalah AI Software Engineer.
 
-prompt = st.text_area("Masukkan instruksi:")
+Mode: {mode}
 
-if st.button("🚀 Generate"):
-    result = ai_engine(prompt, mode)
+Tugas:
+{task}
 
-    st.subheader("📦 Hasil AI")
-    st.code(result)
+ATURAN:
+- buat full stack jika web
+- buat Flutter jika mobile
+- jelaskan error jika debugging
+"""
 
-    st.download_button(
-        "⬇ Download Code",
-        result,
-        file_name="project.txt"
-    )
+prompt = PromptTemplate(
+    input_variables=["mode", "task"],
+    template=template
+)
 
-st.sidebar.subheader("🧠 Memory")
-st.sidebar.text(load_memory())
+chain = LLMChain(llm=llm, prompt=prompt)
+
+def ai_engine(task, mode):
+    result = chain.run({"mode": mode, "task": task})
+    return result
