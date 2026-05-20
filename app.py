@@ -1,4 +1,5 @@
 import streamlit as st
+
 from ai_engine import ai_engine
 from memory import get_memory
 
@@ -13,11 +14,14 @@ st.sidebar.title("🧠 Memory")
 
 st.sidebar.text(get_memory())
 
-mode = st.selectbox("Mode", [
-    "Full Stack Web App",
-    "Mobile App (Flutter)",
-    "Debug Error"
-])
+mode = st.selectbox(
+    "Mode",
+    [
+        "Full Stack Web App",
+        "Mobile App (Flutter)",
+        "Debug Error"
+    ]
+)
 
 task = st.text_area(
     "Masukkan tugas AI:"
