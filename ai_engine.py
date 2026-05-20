@@ -14,9 +14,6 @@ def ai_engine(task, mode):
     prompt = f"""
 Kamu adalah AI Software Engineer professional.
 
-MEMORY:
-{memory}
-
 MODE:
 {mode}
 
@@ -24,10 +21,11 @@ TASK:
 {task}
 
 ATURAN:
-- jika web app → buat full stack structure
-- jika flutter → buat struktur Flutter
-- jika debugging → jelaskan error + solusi
-- jawab detail
+- jawab langsung
+- jangan ulang prompt
+- jika coding → tampilkan kode lengkap
+- gunakan struktur professional
+- gunakan markdown code block
 """
 
     chat_completion = client.chat.completions.create(
