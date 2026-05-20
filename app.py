@@ -1,37 +1,36 @@
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
-from langchain.llms import HuggingFacePipeline
+import streamlit as st
 from transformers import pipeline
 
-# model gratis
+st.title("🤖 AI Software Engineer")
+
+# MODEL AI GRATIS
 pipe = pipeline(
     "text-generation",
-    model="mistralai/Mistral-7B-Instruct-v0.1"
+    model="distilgpt2"
 )
 
-llm = HuggingFacePipeline(pipeline=pipe)
+mode = st.selectbox("Mode", [
+    "Full Stack Web App",
+    "Mobile App (Flutter)",
+    "Debug Error"
+])
 
-template = """
-Kamu adalah AI Software Engineer.
+task = st.text_area("Masukkan tugas")
 
+if st.button("Generate"):
+
+    prompt = f"""
 Mode: {mode}
 
-Tugas:
+Task:
 {task}
-
-ATURAN:
-- buat full stack jika web
-- buat Flutter jika mobile
-- jelaskan error jika debugging
 """
 
-prompt = PromptTemplate(
-    input_variables=["mode", "task"],
-    template=template
-)
+    result = pipe(
+        prompt,
+        max_new_tokens=200
+    )
 
-chain = LLMChain(llm=llm, prompt=prompt)
+    st.subheader("📦 Hasil AI")
 
-def ai_engine(task, mode):
-    result = chain.run({"mode": mode, "task": task})
-    return result
+    st.code(result[0]["generated_text"])
