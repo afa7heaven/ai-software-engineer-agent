@@ -4,7 +4,7 @@ from memory import save_memory, get_memory
 # MODEL AI GRATIS
 pipe = pipeline(
     "text-generation",
-    model="distilgpt2"
+    model="TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 )
 
 def ai_engine(task, mode):
