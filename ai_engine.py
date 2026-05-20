@@ -1,40 +1,16 @@
-import anthropic
-import streamlit as st
-from memory import save_memory, get_memory
+from transformers import pipeline
 
-client = anthropic.Anthropic(
-    api_key=st.secrets["ANTHROPIC_API_KEY"]
+pipe = pipeline(
+    "text-generation",
+    model="gpt2"
 )
 
-def ai_engine(prompt, mode):
-    memory = get_memory()
-
-    system_prompt = f"""
-Kamu adalah AI Software Engineer.
-
-MODE: {mode}
-
-MEMORY:
-{memory}
-
-TUGAS:
-{prompt}
-
-ATURAN:
-- jika web app → full stack
-- jika mobile → Flutter Android + iOS
-- jika error → debug & fix
+def ai_engine(task, mode):
+    prompt = f"""
+Mode: {mode}
+Tugas: {task}
+Buat kode aplikasi lengkap.
 """
 
-    response = client.messages.create(
-        model="claude-3-5-sonnet-20240620",
-        max_tokens=4000,
-        messages=[{"role": "user", "content": system_prompt}]
-    )
-
-    result = response.content[0].text
-
-    save_memory(prompt)
-    save_memory(result)
-
+    result = pipe(prompt, max_new_tokens=300)[0]["generated_text"]
     return result
