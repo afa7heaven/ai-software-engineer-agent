@@ -1,18 +1,11 @@
-from groq import Groq
-import streamlit as st
+import requests
 
-from memory import save_memory, get_memory
-
-client = Groq(
-    api_key="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"
-)
+API_KEY = "GROQ_API_KEY_KAMU"
 
 def ai_engine(task, mode):
 
-    memory = get_memory()
-
     prompt = f"""
-Kamu adalah AI Software Engineer professional.
+Kamu adalah AI Software Engineer.
 
 MODE:
 {mode}
@@ -20,29 +13,32 @@ MODE:
 TASK:
 {task}
 
-ATURAN:
-- jawab langsung
-- jangan ulang prompt
-- jika coding → tampilkan kode lengkap
-- gunakan struktur professional
-- gunakan markdown code block
+Jawab langsung dan jelas.
 """
 
-    chat_completion = client.chat.completions.create(
-    messages=[
-        {
-            "role": "user",
-            "content": prompt
-        }
-    ],
-    model="llama3-8b-8192",
-    temperature=0.7,
-    max_tokens=1024
-)
+    url = "https://api.groq.com/openai/v1/chat/completions"
 
-    output = chat_completion.choices[0].message.content
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
 
-    save_memory(f"USER: {task}")
-    save_memory(f"AI: {output}")
+    data = {
+        "model": "llama3-8b-8192",
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    }
 
-    return output
+    response = requests.post(
+        url,
+        headers=headers,
+        json=data
+    )
+
+    result = response.json()
+
+    return result["choices"][0]["message"]["content"]
