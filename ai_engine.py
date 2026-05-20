@@ -4,7 +4,7 @@ import streamlit as st
 from memory import save_memory, get_memory
 
 client = Groq(
-    api_key=st.secrets["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"]
+   st.secrets["GROQ_API_KEY"]
 )
 
 def ai_engine(task, mode):
