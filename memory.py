@@ -11,7 +11,6 @@ def load_memory():
     try:
         with open(MEMORY_FILE, "r") as f:
             return json.load(f)
-
     except:
         return []
 
